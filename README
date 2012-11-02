@@ -1,0 +1,20 @@
+#
+# kodiakDNS.pl - DNS Gathering Tool
+#
+
+Dependences:
+
+  fpdns (Net::DNS::Fingerprint)
+
+  Download tar.gz from https://github.com/kirei/fpdns/downloads
+
+  $ cd fpdns/
+  $ perl Makefile.PL
+  $ make
+  $ make install
+  $ sudo make install
+
+
+Usage:
+
+   $ perl kodiakDNS.pl <domain>
