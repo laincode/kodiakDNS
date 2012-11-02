@@ -1,0 +1,15 @@
+accounting
+billing
+directory
+email
+example
+exchange
+ftp
+gallery
+mail
+marketing
+public
+reserch
+smtp
+example
+www
