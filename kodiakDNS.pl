@@ -32,17 +32,25 @@
 #
 #
 
-
 use Net::DNS;
 use Net::IP;
 use Net::Whois::IP;
 
+print "\n";
+print "  kodiakDNS.pl - DNS Gathering Tool\n";
+print "\n";
+print "       _         _\n";  
+print "      ((`'-\"\"\"-'`))\n";
+print "       )  -   -  (\n";
+print "      /   x _ x   \\     コディアック`DNS\n";
+print "      \\   ( + )   /\n";
+print "       '-.._^_..-'\n";
+print ("\n\n");
+
 # Main
 
 if ($#ARGV < 0 || $#ARGV > 0) { 
-    print "Usage: perl $0 <domain> \n";
-    print "    by lain\n\n";
-    print "Example: perl $0 google.com\n";	
+    print " Usage: perl $0 <domain> \n\n";
     exit 1;
 }
 
@@ -50,6 +58,9 @@ my $domain = @ARGV[0];
 my @iplist = ();
 my @iprange = ();
 my @nsdnamelist = ();
+my $hasASN = 0;
+my $hasDNSBL = 0;
+my @blacklists=("dnsbl.dronebl.org","access.redhawk.org", "bl.csma.biz", "bl.spamcannibal.org", "bl.spamcop.net", "bl.technovision.dk", "blackholes.five-ten-sg.com", "blackholes.wirehub.net", "blacklist.sci.kun.nl", "block.dnsbl.sorbs.net", "blocked.hilli.dk","cart00ney.surriel.com","cbl.abuseat.org","dev.null.dk", "dialup.blacklist.jippg.org", "dialups.mail-abuse.org","dialups.visi.com","dnsbl.ahbl.org","dnsbl.antispam.or.id", "dnsbl.cyberlogic.net","dnsbl.kempt.net", "dnsbl.njabl.org", "dnsbl.sorbs.net", "dnsbl-1.uceprotect.net","dnsbl-2.uceprotect.net", "dnsbl-3.uceprotect.net","dsbl.dnsbl.net.au", "duinv.aupads.org", "dul.dnsbl.sorbs.net","dul.ru", "fl.chickenboner.biz","hil.habeas.com","http.dnsbl.sorbs.net","http.opm.blitzed.org", "intruders.docs.uu.se","korea.services.net", "l1.spews.dnsbl.sorbs.net","l2.spews.dnsbl.sorbs.net","mail-abuse.blacklist.jippg.org","map.spam-rbl.com","misc.dnsbl.sorbs.net", "msgid.bl.gweep.ca", "multihop.dsbl.org", "no-more-funn.moensted.dk","ohps.dnsbl.net.au", "omrs.dnsbl.net.au", "orid.dnsbl.net.au", "orvedb.aupads.org","osps.dnsbl.net.au","osrs.dnsbl.net.au", "owfs.dnsbl.net.au","owps.dnsbl.net.au","probes.dnsbl.net.au","proxy.bl.gweep.ca","psbl.surriel.com","pss.spambusters.org.ar","rbl.schulte.org","rbl.snark.net","rbl.triumf.ca","rdts.dnsbl.net.au","relays.bl.gweep.ca","relays.bl.kundenserver.de","relays.mail-abuse.org","relays.nether.net","ricn.dnsbl.net.au","rmst.dnsbl.net.au","rsbl.aupads.org","sbl.csma.biz", "sbl.spamhaus.org","sbl-xbl.spamhaus.org","smtp.dnsbl.sorbs.net","socks.dnsbl.sorbs.net","socks.opm.blitzed.org","sorbs.dnsbl.net.au","spam.dnsbl.sorbs.net","spam.olsentech.net","spam.wytnij.to","spamguard.leadmon.net","spamsites.dnsbl.net.au","spamsources.dnsbl.info","spamsources.fabel.dk", "spews.dnsbl.net.au", "t1.dnsbl.net.au", "ucepn.dnsbl.net.au", "unconfirmed.dsbl.org", "web.dnsbl.sorbs.net","whois.rfc-ignorant.org","will-spam-for-food.eu.org","wingate.opm.blitzed.org","xbl.spamhaus.org", "zen.spamhaus.org","zombie.dnsbl.sorbs.net" );
 
 print "\n[Domain] $domain \n";
 
@@ -139,14 +150,61 @@ if ($query) {
     my $dnsversion = `fpdns -D $domain`; 
     print $dnsversion;
 
-    print "\n[Resolving AS Number]\n\n";
+    print "\nDo you want to resolve AS Numbers [y/n] (y) ? ";
+    $asn =  <STDIN>;
+    chomp ($asn);    
+    if ((!$asn) || ($asn eq 'y')) {
+        print "\n[Resolving AS Number]\n";
 
-    foreach my $iprange (@iprange){
-        print "\n".$iprange.'0-255'."\n\n";
-        for ($i = 0; $i <= 255; $i++){ 
-            resolveASNumber($iprange.$i);
+        foreach my $iprange (@iprange){
+            print "\n".$iprange.'0-255'."\n\n";
+            for ($i = 0; $i <= 255; $i++){ 
+                resolveASNumber($iprange.$i);
+            }
         }
-    }   
+        if ($hasASN == 0) {
+            print "\nSearching AS Numbers has no results.\n"
+        }
+    }
+
+    print "\n\nDo you want to look for IPs in DNS-based block list information/database [y/n] (y) ? ";
+    $dnsbl = <STDIN>;
+    chomp ($dnsbl);
+    if ((!$dnsbl) || ($dnsbl eq 'y')) {
+        print "\n[Looking for IPs in DNSBL]\n\n";
+
+        foreach my $iprange (@iprange){
+            print "\n".$iprange.'0-255'."\n\n";
+            for ($i = 0; $i <= 255; $i++){ 
+                if ((grep { $_ eq $iprange.$i } @ipbl)==0){
+                    push(@ipbl, $iprange.$i); 
+                }
+            }
+        }
+
+        for my $ip (@ipbl) {       
+            $ip=~m/(\d+)\.(\d+)\.(\d+)\.(\d+)/;
+            my $arginv=$4.".".$3.".".$2.".".$1;
+            $listaips.=" ".$ip;
+
+            for my $bl (@blacklists) {
+                my $query = $res->search($arginv.".".$bl);
+                if ($query) {
+                    my $reason=$res->query($arginv.".".$bl, 'TXT');
+                    my $problems.="FOUND $ip in ".$bl."!! (reason: ";
+
+                    for my $txt ($reason->answer) {
+                        $problems.=$txt->rdatastr if($txt->type eq "TXT");
+                    }
+                    $problems.=");; ";
+                }
+            }
+        }
+        if ($hasDNSBL == 0) {
+            print "\n IPs are not in blacklists.\n"
+        }
+    }
+    print "\n\n";
 } 
 else {
       warn "query failed: ", $res->errorstring, "\n";
@@ -208,7 +266,8 @@ sub resolveASNumber {
             if ($response->{$_}!="") {         
                 print "$_ $response->{$_} \n";
                 #meterlos en una lista con valores no repetidos
-            } 
+                $hasASN = 1
+	    } 
         }
    }
 }
