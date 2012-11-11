@@ -1,5 +1,6 @@
 #
-# kodiakDNS.pl - DNS Gathering Tool
+#
+#   kodiakDNS.pl - DNS Gathering Tool
 #
 #       _         _  
 #      ((`'-"""-'`)) 
@@ -8,7 +9,7 @@
 #      \   ( + )   /
 #       '-.._^_..-'
 # 
-#
+
 
 Dependences:
 
