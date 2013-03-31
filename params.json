@@ -1,1 +1,1 @@
-{"tagline":"DNS Gathering Tool","note":"Don't delete this file! It's used internally to help with page regeneration.","body":"## Use\r\n\r\n$ perl kodiakDNS.pl <domain>\r\n\r\n\r\n","google":"","name":"KodiakDNS"}
+{"name":"KodiakDNS","tagline":"DNS Gathering Tool","body":"## Use\r\n\r\n$ perl kodiakDNS.pl <domain>\r\n\r\n\r\n","google":"","note":"Don't delete this file! It's used internally to help with page regeneration."}
