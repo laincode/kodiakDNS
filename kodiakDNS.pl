@@ -1,7 +1,7 @@
 #
 # kodiakDNS.pl - DNS Gathering Tool
 #
-# Copyright (c) 2012/2015 lain <laina@riseup.net>
+# Copyright (c) 2012/2015 lain <lain@braincakes.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
