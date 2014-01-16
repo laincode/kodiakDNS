@@ -37,7 +37,7 @@ use Net::IP;
 use Net::Whois::IP;
 
 print "\n";
-print "  kodiakDNS.pl - DNS Gathering Tool\n";
+print "  kodiakDNS - DNS Gathering Tool\n";
 print "\n";
 print "       _         _\n";  
 print "      ((`'-\"\"\"-'`))\n";
