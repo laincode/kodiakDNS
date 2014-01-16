@@ -11,6 +11,15 @@
 # 
 
 
+
+  - Retrieving NS,MX,A,PTR records
+  - Retrieving AXFR
+  - Retrieving subdomains by bruteforcing
+  - Retrieving DNS version
+  - Retrieving AS Numbers
+  - Retrieving IPs in DNS-based block list information/database
+
+
 Dependences:
 
   fpdns (Net::DNS::Fingerprint)
