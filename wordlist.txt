@@ -9,7 +9,14 @@ gallery
 mail
 marketing
 public
-reserch
+research
 smtp
-example
 www
+sftp
+webmail
+sharepoint
+cartero
+broker
+reservas
+web
+smart
