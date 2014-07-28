@@ -20,3 +20,15 @@ broker
 reservas
 web
 smart
+maps
+calendar
+news
+company
+advertising
+api
+legal
+market
+video
+blogs
+blog
+music
