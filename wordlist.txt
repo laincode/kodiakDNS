@@ -49,6 +49,8 @@ document
 domain
 download
 downloads
+drive
+disk
 eaccess
 earth
 email
